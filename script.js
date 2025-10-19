@@ -1,25 +1,84 @@
-const candles = document.querySelectorAll('.candle');
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #000;
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+}
 
-navigator.mediaDevices.getUserMedia({ audio: true })
-  .then(stream => {
-    const audioContext = new AudioContext();
-    const source = audioContext.createMediaStreamSource(stream);
-    const analyser = audioContext.createAnalyser();
-    source.connect(analyser);
-    analyser.fftSize = 256;
-    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+.scene {
+  position: relative;
+  text-align: center;
+}
 
-    function detectBlow() {
-      analyser.getByteFrequencyData(dataArray);
-      let sum = dataArray.reduce((a,b) => a+b, 0);
-      if(sum > 1000){  // blow threshold
-        candles.forEach(candle => candle.style.boxShadow = 'none');
-      } else {
-        candles.forEach(candle => candle.style.boxShadow = '0 0 10px #fff');
-      }
-      requestAnimationFrame(detectBlow);
-    }
+.cake-plate {
+  width: 300px;
+  height: 20px;
+  background: #555;
+  border-radius: 50%;
+  margin: 0 auto;
+  position: relative;
+  top: 20px;
+}
 
-    detectBlow();
-  })
-  .catch(err => console.log('Microphone access denied', err));
+.cake {
+  position: relative;
+  margin: 0 auto;
+}
+
+.layer {
+  width: 200px;
+  height: 50px;
+  margin: 0 auto;
+  border-radius: 50px 50px 20px 20px;
+  background: linear-gradient(to right, #1E3A8A, #3B82F6);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  position: relative;
+}
+
+.layer1 { top: 0; z-index: 3; }
+.layer2 { top: -20px; z-index: 2; width: 180px; }
+.layer3 { top: -40px; z-index: 1; width: 160px; }
+
+.candle {
+  width: 10px;
+  height: 40px;
+  background: white;
+  position: absolute;
+  top: -50px;
+  left: calc(50% - 5px);
+  border-radius: 3px;
+  box-shadow: 0 0 10px #fff;
+}
+
+#candle1 { left: 60px; }
+#candle2 { left: 95px; }
+#candle3 { left: 130px; }
+
+.candle::after {
+  content: '';
+  width: 6px;
+  height: 15px;
+  background: linear-gradient(to top, #00f, #fff);
+  position: absolute;
+  top: -15px;
+  left: 2px;
+  border-radius: 50%;
+  animation: flicker 0.5s infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; transform: translateY(0); }
+  50% { opacity: 0.6; transform: translateY(-2px); }
+}
+
+.message {
+  color: #fff;
+  font-size: 28px;
+  margin-top: 20px;
+  text-shadow: 0 0 10px #3B82F6;
+}
+
