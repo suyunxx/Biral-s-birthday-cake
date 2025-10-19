@@ -1,0 +1,51 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: black;
+  color: white;
+  font-family: 'Arial', sans-serif;
+}
+
+.cake {
+  position: relative;
+  width: 200px;
+  text-align: center;
+}
+
+.cake-layer {
+  width: 200px;
+  height: 50px;
+  background: linear-gradient(to right, #1E3A8A, #3B82F6);
+  margin: 10px 0;
+  border-radius: 10px;
+}
+
+.candle {
+  width: 10px;
+  height: 40px;
+  background: white;
+  position: absolute;
+  top: -50px;
+  left: calc(50% - 5px);
+  border-radius: 3px;
+  box-shadow: 0 0 10px #fff;
+}
+
+.candle::after {
+  content: '';
+  width: 6px;
+  height: 15px;
+  background: orange;
+  position: absolute;
+  top: -15px;
+  left: 2px;
+  border-radius: 50%;
+  animation: flicker 1s infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
