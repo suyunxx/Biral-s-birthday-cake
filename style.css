@@ -1,51 +1,63 @@
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: black;
-  color: white;
-  font-family: 'Arial', sans-serif;
+const candles = document.querySelectorAll('.candle');
+
+// Microphone blow detection
+navigator.mediaDevices.getUserMedia({ audio: true })
+.then(stream => {
+    const audioCtx = new AudioContext();
+    const source = audioCtx.createMediaStreamSource(stream);
+    const analyser = audioCtx.createAnalyser();
+    source.connect(analyser);
+    analyser.fftSize = 256;
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+    function detectBlow() {
+        analyser.getByteFrequencyData(dataArray);
+        let sum = dataArray.reduce((a,b)=>a+b,0);
+        if(sum > 1000){
+            candles.forEach(c=>c.style.boxShadow='none');
+            triggerConfetti();
+        } else {
+            candles.forEach(c=>c.style.boxShadow='0 0 10px #fff');
+        }
+        requestAnimationFrame(detectBlow);
+    }
+    detectBlow();
+})
+.catch(err=>console.log('Mic access denied', err));
+
+// Confetti effect
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let confettiParticles = [];
+
+function triggerConfetti(){
+    for(let i=0;i<100;i++){
+        confettiParticles.push({
+            x: Math.random()*canvas.width,
+            y: Math.random()*canvas.height/2,
+            r: Math.random()*6+2,
+            d: Math.random()*10+5,
+            color: `hsl(${Math.random()*360}, 100%, 70%)`,
+            tilt: Math.random()*10-10
+        });
+    }
 }
 
-.cake {
-  position: relative;
-  width: 200px;
-  text-align: center;
+function drawConfetti(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confettiParticles.forEach((p,i)=>{
+        ctx.beginPath();
+        ctx.fillStyle = p.color;
+        ctx.moveTo(p.x+p.tilt, p.y);
+        ctx.lineTo(p.x+p.tilt+p.r/2, p.y+p.r);
+        ctx.lineTo(p.x+p.tilt-p.r/2, p.y+p.r);
+        ctx.fill();
+        p.y += 2;
+        if(p.y>canvas.height){ confettiParticles.splice(i,1); }
+    });
+    requestAnimationFrame(drawConfetti);
 }
-
-.cake-layer {
-  width: 200px;
-  height: 50px;
-  background: linear-gradient(to right, #1E3A8A, #3B82F6);
-  margin: 10px 0;
-  border-radius: 10px;
-}
-
-.candle {
-  width: 10px;
-  height: 40px;
-  background: white;
-  position: absolute;
-  top: -50px;
-  left: calc(50% - 5px);
-  border-radius: 3px;
-  box-shadow: 0 0 10px #fff;
-}
-
-.candle::after {
-  content: '';
-  width: 6px;
-  height: 15px;
-  background: orange;
-  position: absolute;
-  top: -15px;
-  left: 2px;
-  border-radius: 50%;
-  animation: flicker 1s infinite;
-}
-
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
-}
+drawConfetti();
