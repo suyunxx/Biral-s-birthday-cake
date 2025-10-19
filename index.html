@@ -8,16 +8,36 @@
 </head>
 <body>
   <div class="scene">
+    <!-- Banner -->
+    <div class="banner">
+      <div class="banner-text">Happy Birthday Ankit!</div>
+    </div>
+
+    <!-- Cake -->
     <div class="cake-plate"></div>
     <div class="cake">
-      <div class="layer layer3"></div>
-      <div class="layer layer2"></div>
-      <div class="layer layer1"></div>
+      <div class="layer layer3">
+        <div class="sprinkles"></div>
+        <canvas class="sparkle-layer" id="sparkle3"></canvas>
+      </div>
+      <div class="layer layer2">
+        <div class="sprinkles"></div>
+        <canvas class="sparkle-layer" id="sparkle2"></canvas>
+      </div>
+      <div class="layer layer1">
+        <div class="sprinkles"></div>
+        <canvas class="sparkle-layer" id="sparkle1"></canvas>
+      </div>
 
+      <!-- Regular candles -->
       <div class="candle" id="candle1"></div>
       <div class="candle" id="candle2"></div>
       <div class="candle" id="candle3"></div>
+
+      <!-- Number candle -->
+      <div class="candle number-candle" id="number17">17</div>
     </div>
+
     <div class="message">Happy Birthday!</div>
     <canvas id="confetti"></canvas>
   </div>
